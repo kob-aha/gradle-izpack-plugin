@@ -1,9 +1,10 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'nexus'
+apply plugin: 'maven-publish'
 
 group = 'org.gradle.api.plugins'
-version = '0.2.3'
+version = '0.2.4'
 
 buildscript {
     repositories {
@@ -83,4 +84,54 @@ modifyPom {
             }
         }
     }
+}
+
+publishing {
+	publications {
+		jar(MavenPublication) {
+			artifactId 'gradle-izpack-plugin'
+			
+			from components.java
+			
+			pom.withXml {
+				asNode().children().last() + {
+				//project {
+					resolveStrategy = Closure.DELEGATE_FIRST
+					name 'Gradle IzPack plugin'
+					description 'Gradle plugin that provides support for packaging applications for the Java platform via IzPack.'
+					url 'https://github.com/bmuschko/gradle-izpack-plugin'
+					inceptionYear '2012'
+
+					scm {
+						url 'https://github.com/bmuschko/gradle-izpack-plugin'
+						connection 'scm:https://bmuschko@github.com/bmuschko/gradle-izpack-plugin.git'
+						developerConnection 'scm:git://github.com/bmuschko/gradle-izpack-plugin.git'
+					}
+
+					licenses {
+						license {
+							name 'The Apache Software License, Version 2.0'
+							url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+							distribution 'repo'
+						}
+					}
+
+					developers {
+						developer {
+							id 'bmuschko'
+							name 'Benjamin Muschko'
+							email 'benjamin.muschko@gmail.com'
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	repositories {
+		maven {
+			url "file:/${project.projectDir}/lib"			
+		}
+		mavenLocal()
+	}
 }

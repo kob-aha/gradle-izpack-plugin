@@ -69,20 +69,20 @@ class CreateInstallerTask extends DefaultTask {
     void compile() {
         log.info "Starting to create IzPack installer from base directory '${getBaseDir().canonicalPath}' and install file '${getInstallFile().canonicalPath}'."
 
-        ant.taskdef(name: 'izpack', classpath: getClasspath().asPath, classname: 'com.izforge.izpack.ant.IzPackTask')
+        //ant.taskdef(name: 'izpack', classpath: getClasspath().asPath, classname: 'com.izforge.izpack.ant.IzPackTask')
 
         getAppProperties().entrySet().each {
             ant.property(name: it.key, value: it.value)
         }
 
-        ant.izpack(basedir: getBaseDir().canonicalPath,
+        ant.izpack(input: getInstallFile().canonicalPath,
+				   basedir: getBaseDir().canonicalPath,
                    output: getOutputFile().canonicalPath,
                    installerType: getInstallerType(),
                    compression: getCompression(),
-                   compressionlevel: getCompressionLevel()) {
-            config(getInstallFile().text)
-        }
-
+                   compressionlevel: getCompressionLevel(),
+				   inheritAll: 'true') 
+       
         log.info("Finished creating IzPack installer.")
     }
 }
